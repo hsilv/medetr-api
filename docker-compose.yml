@@ -1,0 +1,43 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nestjs-app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "4000:4000"
+    depends_on:
+      oracle:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - my-network
+
+  oracle:
+    image: container-registry.oracle.com/database/enterprise:19.3.0.0
+    container_name: oracle-db
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    networks:
+      - my-network
+    environment:
+      - ORACLE_PWD=oracle
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s system/oracle@//localhost:1521/ORCLCDB"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  my-network:
+    external: true
+
+volumes:
+  oracle-data:
