@@ -1,5 +1,11 @@
-import { BeforeInsert, Column, Entity, PrimaryColumn } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryColumn,
+} from 'typeorm';
+import * as bcrypt from 'bcryptjs';
 
 @Entity()
 export class User {
@@ -33,13 +39,18 @@ export class User {
   @Column({ type: 'varchar' })
   clave: string;
 
-  @Column({ type: 'number', default: 1 })
+  @Column({ type: 'number', default: 0 })
   verificado: number;
 
   @BeforeInsert()
   async hashPassword() {
-    console.log('Hashing password');
-    this.clave = await bcrypt.hash(this.clave, 5);
-    console.log('Password hashed');
+    this.clave = await bcrypt.hash(this.clave, 10);
+  }
+
+  @BeforeUpdate()
+  async hashPasswordUpdate() {
+    if (this.clave) {
+      this.clave = await bcrypt.hash(this.clave, 10);
+    }
   }
 }

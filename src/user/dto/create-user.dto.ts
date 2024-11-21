@@ -29,7 +29,7 @@ export class CreateUserDto {
   apellidos: string;
 
   @ApiProperty({
-    example: '20-03-2002',
+    example: '2002-03-20',
     description: 'Fecha de nacimiento del usuario',
   })
   @IsNotEmpty({ message: 'La fecha de nacimiento del usuario es requerida' })
@@ -42,11 +42,11 @@ export class CreateUserDto {
   @ApiProperty({ example: '1234567890101', description: 'DPI del usuario' })
   @IsNotEmpty({ message: 'El DPI del usuario es requerido' })
   @IsString({ message: 'El DPI del usuario debe ser texto' })
-  @Length(13, 13, {
-    message: 'El DPI del usuario debe tener 13 o 13 caracteres',
-  })
   @Matches(/^[1-9][0-9]{12}$/, {
     message: 'El DPI del usuario debe ser numérico y no puede comenzar con 0',
+  })
+  @Length(13, 13, {
+    message: 'El DPI del usuario debe tener 13 o 13 caracteres',
   })
   dpi: string;
 
@@ -67,12 +67,12 @@ export class CreateUserDto {
   })
   @IsString({ message: 'El teléfono del usuario debe ser texto' })
   @IsNotEmpty({ message: 'El teléfono del usuario es requerido' })
-  @Length(8, 8, {
-    message: 'El teléfono del usuario debe tener 8 caracteres',
-  })
   @Matches(/^[1-9][0-9]{7}$/, {
     message:
       'El teléfono del usuario debe ser numérico y no puede comenzar con 0',
+  })
+  @Length(8, 8, {
+    message: 'El teléfono del usuario debe tener 8 caracteres',
   })
   telefono: string;
 
@@ -81,9 +81,9 @@ export class CreateUserDto {
     description: 'Correo electrónico del usuario',
   })
   @IsString({ message: 'El correo electrónico del usuario debe ser texto' })
-  @IsEmail({}, { message: 'El correo electrónico del usuario no es válido' })
   @IsNotEmpty({ message: 'El correo electrónico del usuario es requerido' })
   @MaxLength(100, { message: 'El correo electrónico es demasiado largo' })
+  @IsEmail({}, { message: 'El correo electrónico del usuario no es válido' })
   correo: string;
 
   @ApiProperty({
@@ -93,7 +93,7 @@ export class CreateUserDto {
   @IsString({ message: 'La contraseña del usuario debe ser texto' })
   @IsNotEmpty({ message: 'La contraseña del usuario es requerida' })
   @Matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&ñáéíóú])[A-Za-z\d@$!%*?&ñáéíóú]{8,}$/,
     {
       message:
         'La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un caracter especial',
