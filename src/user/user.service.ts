@@ -14,7 +14,7 @@ import { plainToClass } from 'class-transformer';
 export class UserService {
   constructor(@InjectRepository(User) private repository: Repository<User>) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     plainToClass(User, createUserDto);
     const user = this.repository.create(createUserDto);
 
@@ -46,11 +46,11 @@ export class UserService {
     }
   }
 
-  async findAll() {
+  async findAll(): Promise<User[]> {
     return this.repository.find();
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<User> {
     let user;
     try {
       user = await this.repository.findOneBy({ id });
@@ -63,7 +63,22 @@ export class UserService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async findOneByEmail(correo: string): Promise<User> {
+    let one;
+    try {
+      one = await this.repository.findOneBy({ correo });
+    } catch (error) {
+      console.error(error);
+    }
+
+    if (!one) {
+      throw new NotFoundException(['Usuario no encontrado']);
+    }
+
+    return one;
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     plainToClass(User, updateUserDto);
     const user = this.repository.create(updateUserDto);
 
