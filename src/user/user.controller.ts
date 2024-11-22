@@ -61,6 +61,10 @@ export class UserController {
   @Get('profile')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Obtener perfil del usuario' })
+  @ApiOkResponse({
+    description: 'Perfil del usuario',
+    type: CreatedUserDto,
+  })
   @ApiBearerAuth()
   getProfile(@Req() req) {
     return this.userService.findOne(req.user.id);
