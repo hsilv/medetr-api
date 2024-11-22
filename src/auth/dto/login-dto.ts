@@ -36,3 +36,18 @@ export class UnauthorizedDto {
   })
   error: string;
 }
+
+export class SuccesfulLoginDto {
+  @ApiProperty({
+    example: 1,
+    description: 'Identificador del usuario',
+  })
+  id: number;
+
+  @ApiProperty({
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjI0MSwiaWF0IjoxNzMyMj...',
+    description: 'Token de acceso',
+  })
+  access_token: string;
+}

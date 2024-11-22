@@ -3,12 +3,17 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcryptjs';
 import { UserService } from 'src/user/user.service';
+import { AuthJwtPayload } from './types/auth-jwtPayload';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
   async validateUser(email: string, password: string) {
     let user;
@@ -27,5 +32,10 @@ export class AuthService {
       throw new UnauthorizedException(['Credenciales inválidas']);
 
     return { id: user.id };
+  }
+
+  login(userId: number) {
+    const payload: AuthJwtPayload = { sub: userId };
+    return this.jwtService.sign(payload);
   }
 }

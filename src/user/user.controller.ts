@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -24,6 +27,7 @@ import {
   CreatedUserDto,
   DeletedUserDto,
 } from './dto/response-user.dto';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 
 @ApiTags('Usuarios')
 @Controller('user')
@@ -52,6 +56,14 @@ export class UserController {
   })
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Obtener perfil del usuario' })
+  @ApiBearerAuth()
+  getProfile(@Req() req) {
+    return this.userService.findOne(req.user.id);
   }
 
   @Get(':id')
