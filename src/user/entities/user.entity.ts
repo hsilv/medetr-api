@@ -3,11 +3,13 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  ManyToOne,
   PrimaryColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { Profile } from 'src/profile/entities/profile.entity';
 
-@Entity()
+@Entity('TB_USUARIOS')
 export class User {
   @PrimaryColumn({ type: 'int', generated: true })
   id: number;
@@ -41,6 +43,9 @@ export class User {
 
   @Column({ type: 'number', default: 0 })
   verificado: number;
+
+  @ManyToOne(() => Profile, (profile) => profile.id)
+  id_perfil_usuario: Profile;
 
   @BeforeInsert()
   async hashPassword() {

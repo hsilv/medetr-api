@@ -50,6 +50,8 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get()
   @ApiOperation({ summary: 'Listar todos los usuarios' })
   @ApiOkResponse({
@@ -60,8 +62,8 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get('profile')
   @UseGuards(JwtAuthGuard)
+  @Get('profile')
   @ApiOperation({ summary: 'Obtener perfil del usuario' })
   @ApiOkResponse({
     description: 'Perfil del usuario',
@@ -76,6 +78,8 @@ export class UserController {
     return this.userService.findOne(req.user.id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Get(':id')
   @ApiOperation({ summary: 'Obtener un usuario por ID' })
   @ApiOkResponse({
@@ -90,6 +94,8 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar un usuario por ID' })
   @ApiOkResponse({
@@ -107,6 +113,8 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Eliminar un usuario por ID' })
   @ApiOkResponse({
     description: 'Usuario eliminado',
