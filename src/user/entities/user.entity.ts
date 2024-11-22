@@ -44,8 +44,8 @@ export class User {
   @Column({ type: 'number', default: 0 })
   verificado: number;
 
-  @ManyToOne(() => Profile, (profile) => profile.id)
-  id_perfil_usuario: Profile;
+  @ManyToOne(() => Profile, (profile) => profile.id, { onDelete: 'SET NULL' })
+  perfil_usuario: Profile;
 
   @BeforeInsert()
   async hashPassword() {

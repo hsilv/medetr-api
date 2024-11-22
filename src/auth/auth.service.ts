@@ -10,6 +10,7 @@ import { UserService } from 'src/user/user.service';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
 import refreshJwtConfig from './config/refresh-jwt.config';
 import { ConfigType } from '@nestjs/config';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string) {
-    let user;
+    let user: User;
     try {
       user = await this.userService.findOneByEmail(email);
     } catch (error) {
@@ -35,6 +36,9 @@ export class AuthService {
     const isPasswordMatch = await compare(password, user.clave);
     if (!isPasswordMatch)
       throw new UnauthorizedException(['Credenciales inválidas']);
+
+    const isVerified = user.verificado === 1;
+    if (!isVerified) throw new UnauthorizedException(['Usuario no verificado']);
 
     return { id: user.id };
   }

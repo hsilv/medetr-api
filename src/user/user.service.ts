@@ -64,7 +64,7 @@ export class UserService {
   }
 
   async findOneByEmail(correo: string): Promise<User> {
-    let one;
+    let one: User;
     try {
       one = await this.repository.findOneBy({ correo });
     } catch (error) {
