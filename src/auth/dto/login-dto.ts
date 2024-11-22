@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class LoginDto {
   @ApiProperty({
@@ -7,6 +7,9 @@ export class LoginDto {
     description: 'Correo electrónico del usuario',
   })
   @IsString({ message: 'El correo electrónico del usuario debe ser texto' })
+  @IsNotEmpty({
+    message: 'El correo electrónico del usuario no debe estar vacío',
+  })
   correo: string;
 
   @ApiProperty({
@@ -14,6 +17,7 @@ export class LoginDto {
     description: 'Contraseña del usuario',
   })
   @IsString({ message: 'La contraseña del usuario debe ser texto' })
+  @IsNotEmpty({ message: 'La contraseña del usuario no debe estar vacía' })
   clave: string;
 }
 
@@ -50,4 +54,11 @@ export class SuccesfulLoginDto {
     description: 'Token de acceso',
   })
   access_token: string;
+
+  @ApiProperty({
+    example:
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjI0MSwiaWF0IjoxNzMyMj...',
+    description: 'Token de refresco',
+  })
+  refresh_token: string;
 }

@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -7,12 +8,16 @@ import { JwtService } from '@nestjs/jwt';
 import { compare } from 'bcryptjs';
 import { UserService } from 'src/user/user.service';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
+import refreshJwtConfig from './config/refresh-jwt.config';
+import { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    @Inject(refreshJwtConfig.KEY)
+    private refreshTokenConfig: ConfigType<typeof refreshJwtConfig>,
   ) {}
 
   async validateUser(email: string, password: string) {
@@ -36,6 +41,14 @@ export class AuthService {
 
   login(userId: number) {
     const payload: AuthJwtPayload = { sub: userId };
-    return this.jwtService.sign(payload);
+    const token = this.jwtService.sign(payload);
+    const refreshToken = this.jwtService.sign(payload, this.refreshTokenConfig);
+    return { id: userId, access_token: token, refresh_token: refreshToken };
+  }
+
+  refreshToken(userId: number) {
+    const payload: AuthJwtPayload = { sub: userId };
+    const token = this.jwtService.sign(payload);
+    return { id: userId, access_token: token };
   }
 }

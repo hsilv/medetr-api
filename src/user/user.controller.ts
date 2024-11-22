@@ -21,6 +21,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
   ErrorUserDto,
@@ -28,6 +29,7 @@ import {
   DeletedUserDto,
 } from './dto/response-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
+import { UnauthorizedDto } from 'src/auth/dto/login-dto';
 
 @ApiTags('Usuarios')
 @Controller('user')
@@ -64,6 +66,10 @@ export class UserController {
   @ApiOkResponse({
     description: 'Perfil del usuario',
     type: CreatedUserDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'No autorizado',
+    type: UnauthorizedDto,
   })
   @ApiBearerAuth()
   getProfile(@Req() req) {

@@ -1,4 +1,4 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Post, Req, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   ApiBody,
@@ -8,6 +8,8 @@ import {
 } from '@nestjs/swagger';
 import { LoginDto, SuccesfulLoginDto, UnauthorizedDto } from './dto/login-dto';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
+import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
+import { RefreshTokenDto } from './dto/refresh-dto';
 
 @Controller('auth')
 export class AuthController {
@@ -28,7 +30,15 @@ export class AuthController {
   })
   @Post('login')
   async login(@Request() req) {
-    const token = this.authService.login(req.user.id);
-    return { id: req.user.id, access_token: token };
+    return this.authService.login(req.user.id);
+  }
+
+  @UseGuards(RefreshAuthGuard)
+  @Post('refresh')
+  @ApiBody({
+    type: RefreshTokenDto,
+  })
+  refreshToken(@Req() req) {
+    return this.authService.refreshToken(req.user.id);
   }
 }
