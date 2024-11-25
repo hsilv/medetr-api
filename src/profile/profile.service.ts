@@ -124,7 +124,9 @@ export class ProfileService {
       throw new BadRequestException(['Rol no asignado al perfil']);
     }
 
-    return await this.profileRolesRepository.remove(check);
+    await this.profileRolesRepository.remove(check);
+
+    return removeRoleFromProfileDto;
   }
 
   async findAll() {
