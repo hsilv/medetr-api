@@ -9,10 +9,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { plainToClass } from 'class-transformer';
+import { ProfileRoles } from 'src/role/entities/role.entity';
+import { RolePermissions } from 'src/permissions/entities/permission.entity';
+import { CreatedUserDto } from './dto/response-user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectRepository(User) private repository: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private repository: Repository<User>,
+    @InjectRepository(ProfileRoles)
+    private profileRolesRepository: Repository<ProfileRoles>,
+    @InjectRepository(RolePermissions)
+    private rolePermissionsRepository: Repository<RolePermissions>,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     plainToClass(User, createUserDto);
@@ -50,17 +59,48 @@ export class UserService {
     return this.repository.find();
   }
 
-  async findOne(id: number): Promise<User> {
-    let user;
+  async findOne(id: number): Promise<CreatedUserDto> {
+    let user: User;
     try {
-      user = await this.repository.findOneBy({ id });
+      user = await this.repository.findOne({
+        where: { id },
+        relations: {
+          perfil_usuario: true,
+        },
+      });
     } catch (error) {
       console.error(error);
     }
     if (!user) {
       throw new NotFoundException(['Usuario no encontrado']);
     }
-    return user;
+
+    if (user.perfil_usuario) {
+      const rolesRes = await this.profileRolesRepository.find({
+        where: { perfil: user.perfil_usuario },
+        relations: {
+          rol: true,
+        },
+      });
+      const roles = rolesRes.map((role) => role.rol);
+
+      if (roles) {
+        const permissionsRes = await this.rolePermissionsRepository.find({
+          where: { rol: roles },
+          relations: {
+            permiso: true,
+          },
+        });
+        const permissions = permissionsRes.map(
+          (permission) => permission.permiso.nombre,
+        );
+        return { ...user, permisos: permissions };
+      } else {
+        return user;
+      }
+    } else {
+      return user;
+    }
   }
 
   async findOneByEmail(correo: string): Promise<User> {

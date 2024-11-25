@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
+import { CreatedProfileDto } from 'src/profile/dto/response-profile.dto';
 
 export class CreatedUserDto extends CreateUserDto {
   @ApiProperty({
@@ -20,6 +21,20 @@ export class CreatedUserDto extends CreateUserDto {
     description: 'Estado de verificación del usuario',
   })
   verificado: number;
+
+  @ApiProperty({
+    description: 'Perfil del usuario',
+    type: CreatedProfileDto,
+  })
+  @ApiPropertyOptional()
+  perfil_usuario?: CreatedProfileDto;
+
+  @ApiProperty({
+    example: ['ADMINISTRADOR'],
+    description: 'Permisos del usuario',
+  })
+  @ApiPropertyOptional()
+  permisos?: string[];
 }
 
 export class ErrorUserDto {
