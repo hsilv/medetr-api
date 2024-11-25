@@ -10,4 +10,13 @@ export class CreateRoleDto {
   @MaxLength(100, { message: 'El nombre del rol es demasiado largo' })
   @IsString({ message: 'El nombre del rol debe ser texto' })
   nombre: string;
+
+  @ApiProperty({
+    example: 'Rol con acceso total a la base de datos',
+    description: 'Descripción del rol',
+  })
+  @IsNotEmpty({ message: 'La descripción del rol es requerida' })
+  @MaxLength(255, { message: 'La descripción del rol es demasiado larga' })
+  @IsString({ message: 'La descripción del rol debe ser texto' })
+  descripcion: string;
 }

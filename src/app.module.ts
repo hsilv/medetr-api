@@ -8,7 +8,6 @@ import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { RoleModule } from './role/role.module';
 import { PermissionsModule } from './permissions/permissions.module';
-
 @Module({
   imports: [
     TypeOrmModule.forRoot({

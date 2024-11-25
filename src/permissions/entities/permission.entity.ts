@@ -6,7 +6,7 @@ export class Permission {
   @PrimaryColumn({ type: 'int', generated: true })
   id: number;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, unique: true })
   nombre: string;
 
   @Column({ type: 'varchar', length: 255 })
@@ -18,11 +18,13 @@ export class RolePermissions {
   @PrimaryColumn({ type: 'int', generated: true })
   id: number;
 
-  @OneToOne(() => Roles, (roles) => roles.id, { cascade: true })
+  @OneToOne(() => Roles, (roles) => roles.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'id_rol' })
-  id_rol: Roles;
+  rol: Roles;
 
-  @OneToOne(() => Permission, (permission) => permission.id, { cascade: true })
+  @OneToOne(() => Permission, (permission) => permission.id, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'id_permiso' })
-  id_permiso: Permission;
+  permiso: Permission;
 }
